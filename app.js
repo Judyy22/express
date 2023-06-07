@@ -39,6 +39,7 @@ app.post("/api/courses", (req, res) => {
     res.send(course);
 });
 
+//서버실행
 app.listen(port, () => {
     console.log(`서버가 실행됩니다. http://localhost:${port}`);
 });
