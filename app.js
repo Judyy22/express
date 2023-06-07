@@ -5,7 +5,7 @@ const express = require("express");
 const app = express();
 
 //포트번호
-const port = 3000;
+const port = 8080;
 
 //임시 데이터
 const courses = [
@@ -39,7 +39,6 @@ app.post("/api/courses", (req, res) => {
     res.send(course);
 });
 
-//서버실행
 app.listen(port, () => {
     console.log(`서버가 실행됩니다. http://localhost:${port}`);
 });
