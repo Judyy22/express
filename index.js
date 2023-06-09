@@ -1,16 +1,14 @@
 //express 모듈 불러오기
 const express = require("express");
+const cors = require("cors");
 
 //express 사용
 const app = express();
 
-app.set("port", process.env.PORT || 8080); // 포트 설정
+app.set("port", process.env.PORT || 3000); // 포트 설정
 app.set("host", process.env.HOST || "0.0.0.0"); // 아이피 설정
 
-// 루트 접속시 아이피 출력
-app.get("/", function (req, res) {
-    res.send("접속된 아이피: " + req.ip);
-});
+app.use(cors());
 
 // 서버 동작중인 표시
 app.listen(app.get("port"), app.get("host"), () =>
@@ -52,5 +50,5 @@ app.post("/api/courses", (req, res) => {
         name: req.body.name,
     };
     courses.push(course);
-    res.send(course);
+    res.send(courses);
 });
