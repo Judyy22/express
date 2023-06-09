@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <title>Document</title>
+    </head>
+    <body>
+        <h1>Courses</h1>
+        <ul id="courseList"></ul>
+
+        <div>
+            <div id="showButton">Show Course :</div>
+            <div id="showCourseName"></div>
+        </div>
+
+        <h1>Add Course</h1>
+        <div>
+            <span>과정명 :</span>
+            <input type="text" id="courseNameInput" />
+            <button id="addCourseButton">추가</button>
+        </div>
+
+        <script>
+            $(document).ready(function () {
+                const server = "http://localhost:3000";
+                let courses = [];
+
+                // GET 요청 예시
+                $.ajax({
+                    url: `${server}/api/courses`,
+                    type: "GET",
+                    dataType: "json",
+                    success: function (data) {
+                        console.log("response", data);
+                        courses = data;
+                        const courseList = $("#courseList");
+
+                        data.forEach(function (course) {
+                            const listItem = $("<li>").text(course.name);
+                            courseList.append(listItem);
+                        });
+
+                        // Show Button에 id 버튼 생성
+                        data.forEach(function (course) {
+                            const button = $("<button>").text(course.id);
+                            button.click(function () {
+                                const courseId = parseInt($(this).text());
+
+                                // courses 배열에서 해당 ID를 가진 과정을 찾음
+                                const course = courses.find(
+                                    (c) => c.id === courseId
+                                );
+
+                                if (course) {
+                                    // 과정 이름을 출력
+                                    $("#showCourseName").text(course.name);
+                                } else {
+                                    // 해당 ID를 가진 과정이 없을 경우 메시지 출력
+                                    $("#showCourseName").text(
+                                        "해당 ID의 과정을 찾을 수 없습니다."
+                                    );
+                                }
+                            });
+
+                            $("#showButton").append(button);
+                        });
+                    },
+                    error: function (error) {
+                        console.log(`Error : ${error}`);
+                    },
+                });
+
+                // POST 요청 예시
+                $("#addCourseButton").click(function () {
+                    const courseName = $("#courseNameInput").val();
+
+                    $.ajax({
+                        url: `${server}/api/courses`,
+                        type: "POST",
+                        dataType: "json",
+                        contentType: "application/json",
+                        data: JSON.stringify({ name: courseName }),
+                        success: function (response) {
+                            console.log("Course added:", response);
+                            courses.push(response);
+
+                            // 새로운 과정을 리스트에 추가
+                            const courseAddName =
+                                response[response.length - 1].name;
+                            const listItem = $("<li>").text(courseAddName);
+                            $("#courseList").append(listItem);
+
+                            // Show Button에 id 버튼 생성
+                            const button = $("<button>").text(
+                                response[response.length - 1].id
+                            );
+                            button.click(function () {
+                                const courseId = parseInt($(this).text());
+
+                                // courses 배열에서 해당 ID를 가진 과정을 찾음
+                                const course = courses.find(
+                                    (c) => c.id === courseId
+                                );
+
+                                if (course) {
+                                    // 과정 이름을 출력
+                                    $("#showCourseName").text(course.name);
+                                } else {
+                                    // 해당 ID를 가진 과정이 없을 경우 메시지 출력
+                                    $("#showCourseName").text(
+                                        "해당 ID의 과정을 찾을 수 없습니다."
+                                    );
+                                }
+                            });
+
+                            $("#showButton").append(button);
+
+                            // 입력 필드를 리셋
+                            $("#courseNameInput").val("");
+                        },
+                        error: function (error) {
+                            console.log(`Error : ${error}`);
+                        },
+                    });
+                });
+            });
+        </script>
+    </body>
+</html>
